@@ -1,16 +1,19 @@
-FROM amazoncorretto:8
+FROM node:16
 
 WORKDIR /usr/src/app
 
-EXPOSE 8080
+COPY package*.json ./
 
-COPY .mvn .mvn
-COPY mvnw .
-COPY pom.xml .
-COPY src ./src
+RUN npm install
 
-RUN chmod +x mvnw
+COPY . .
 
-RUN ./mvnw package
+# ENV REACT_APP_BACKEND_URL=http://localhost:8080
 
-CMD ["java", "-jar", "target/docker-example-1.1.3.jar"]
+RUN npm run build
+
+RUN npm install -g serve
+
+EXPOSE 5000
+
+CMD ["serve", "-s", "-l", "5000", "build"]
