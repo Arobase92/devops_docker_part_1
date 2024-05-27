@@ -1,19 +1,15 @@
-FROM node:16
+FROM golang:1.16
 
-WORKDIR /usr/src/app
+WORKDIR /us/src/app
 
-COPY package*.json ./
+EXPOSE 8080
 
-RUN npm install
+COPY . ./
 
-COPY . .
+RUN go build
 
-# ENV REACT_APP_BACKEND_URL=http://localhost:8080
+RUN go test ./...
 
-RUN npm run build
+# ENV REQUEST_ORIGIN=http://localhost:5000
 
-RUN npm install -g serve
-
-EXPOSE 5000
-
-CMD ["serve", "-s", "-l", "5000", "build"]
+CMD ["./server"]
